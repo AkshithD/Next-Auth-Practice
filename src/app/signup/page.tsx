@@ -52,7 +52,7 @@ export default function SignUpPage() {
         <div>
           <label className="block mb-1">Name</label>
           <input
-            className="border p-2 w-full"
+            className="border p-2 w-full text-black"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your Name"
@@ -61,7 +61,7 @@ export default function SignUpPage() {
         <div>
           <label className="block mb-1">Email</label>
           <input
-            className="border p-2 w-full"
+            className="border p-2 w-full text-black"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
@@ -71,7 +71,7 @@ export default function SignUpPage() {
           <label className="block mb-1">Password</label>
           <input
             type="password"
-            className="border p-2 w-full"
+            className="border p-2 w-full text-black"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="********"
@@ -81,6 +81,7 @@ export default function SignUpPage() {
           Register
         </button>
       </form>
+      <p className="mt-4"> Already have an account? <a href="/signin" className="text-blue-600">Sign in</a></p>
     </section>
   )
 }
