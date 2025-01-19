@@ -42,7 +42,7 @@ export default function SignInPage() {
         <div>
           <label className="block mb-1">Email</label>
           <input
-            className="border p-2 w-full"
+            className="border p-2 w-full text-black"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
@@ -53,7 +53,7 @@ export default function SignInPage() {
           <label className="block mb-1">Password</label>
           <input
             type="password"
-            className="border p-2 w-full"
+            className="border p-2 w-full text-black"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="********"
@@ -71,6 +71,7 @@ export default function SignInPage() {
       >
         Sign in with Google
       </button>
+      <p className="mt-4"> Don&apos;t have an account? <a href="/signup" className="text-blue-600">Sign up</a></p>
     </section>
   )
 }
