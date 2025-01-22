@@ -1,12 +1,24 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/prisma";
+import { prisma } from "@/app/db/prisma";
 
 const registerSchema = z.object({
-  email: z.string().email("Invalid email format"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  name: z.string().min(1, "Name is required"),
+  email: z
+    .string({ required_error: "Email is required" })
+    .min(1, "Email is required")
+    .email("Invalid email"),
+  password: z
+    .string({ required_error: "Password is required" })
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/\d/, "Password must contain at least one digit")
+    .regex(/[@$!%*?&#]/, "Password must contain at least one special character")
+    .max(32, "Password must be less than 32 characters"),
+  name: z
+    .string({ required_error: "Name is required" })
+    .min(1, "Name is required"),
 });
 
 export async function POST(req: Request) {
@@ -46,10 +58,11 @@ export async function POST(req: Request) {
         { error: error.errors.map((e) => e.message).join(", ") },
         { status: 400 }
       );
+    } else {
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
     }
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
   }
 }
