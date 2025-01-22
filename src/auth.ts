@@ -50,7 +50,7 @@ const providers: Provider[] = [Google,
       }
       const parsed = credentialsSchema.safeParse(credentials);
       if (!parsed.success) {
-        return new ValidationError();
+        throw new ValidationError();
       }
       const user = await prisma.user.findUnique({
         where: { email: credentials.email as string },

@@ -3,22 +3,6 @@ import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { SignInWithGoogle } from "../components/auth/signin-button-google"
 import { signIn, useSession } from "next-auth/react"
-import { z } from "zod"
-
-const credentialsSchema = z.object({
-  email: z
-    .string({ required_error: "Email is required" })
-    .min(1, "Email is required")
-    .email("Invalid email"),
-  password: z
-    .string({ required_error: "Password is required" })
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-    .regex(/\d/, "Password must contain at least one digit")
-    .regex(/[@$!%*?&#]/, "Password must contain at least one special character")
-    .max(32, "Password must be less than 32 characters"),
-})
 
 export default function SignInPage() {
   const { status } = useSession();
@@ -47,13 +31,7 @@ export default function SignInPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setError("") // Reset error
-    const parse = credentialsSchema.safeParse({ email, password })
-
-    if (!parse.success) {
-      setError(parse.error.errors[0].message)
-      return
-    }
+    setError("")
     const result = await signIn("credentials", {
       email,
       password,
