@@ -40,7 +40,10 @@ export default function SignInPage() {
     if (errorParam) {
       setError(errorParam);
     }
-  }, [searchParams]);
+    // Reset the query parameters after reading
+    const currentPath = window.location.pathname; // Get the current path without query params
+    router.replace(currentPath);
+  }, [searchParams, router],);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
