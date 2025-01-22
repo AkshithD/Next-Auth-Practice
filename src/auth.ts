@@ -4,10 +4,15 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/app/db/prisma";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
 import { Provider } from "next-auth/providers";
 
 class InvalidLoginError extends CredentialsSignin {
   code = "Incorrect password"
+}
+
+class InvalidCredentialsError extends CredentialsSignin {
+  code = "Invalid credentials"
 }
 
 class UserNotFoundError extends CredentialsSignin {
@@ -18,6 +23,21 @@ class OauthError extends CredentialsSignin {
   code = "Email already registered with another provider"
 }
 
+const credentialsSchema = z.object({
+  email: z
+    .string({ required_error: "Email is required" })
+    .min(1, "Email is required")
+    .email("Invalid email"),
+  password: z
+    .string({ required_error: "Password is required" })
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/\d/, "Password must contain at least one digit")
+    .regex(/[@$!%*?&#]/, "Password must contain at least one special character")
+    .max(32, "Password must be less than 32 characters"),
+});
+
 const providers: Provider[] = [Google,
   Credentials({
     name: "Credentials",
@@ -26,6 +46,13 @@ const providers: Provider[] = [Google,
       password: { label: "Password", type: "password" },
     },
     authorize: async (credentials) => {
+      if (!credentials?.email || !credentials?.password) {
+        throw new InvalidCredentialsError();
+      }
+      const parsed = credentialsSchema.safeParse(credentials);
+      if (!parsed.success) {
+        throw new InvalidCredentialsError();
+      }
       const user = await prisma.user.findUnique({
         where: { email: credentials.email as string },
       });
