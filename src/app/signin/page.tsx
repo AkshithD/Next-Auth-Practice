@@ -88,6 +88,9 @@ export default function SignInPage() {
         Don&apos;t have an account?{" "}
         <a href="/signup" className="text-blue-600">Sign up</a>
       </p>
+      <p className="mt-4">
+        <a href="/forgot-password" className="text-blue-600">Forgot your password?</a>
+      </p>
     </section>
   )
 }

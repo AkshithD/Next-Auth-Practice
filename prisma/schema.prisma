@@ -17,6 +17,9 @@ model User {
   image          String?
   accounts       Account[]
 
+  resetToken        String?    // Stores the hashed reset token
+  resetTokenExpires DateTime?  // Stores the expiration time of the reset token
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
