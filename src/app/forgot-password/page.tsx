@@ -51,6 +51,7 @@ const ForgotPasswordPage: React.FC = () => {
             <form onSubmit={handleSubmit}>
                 <label htmlFor="email">Email:</label>
                 <input
+                    className='border p-2 text-black'
                     type="email"
                     id="email"
                     value={email}
@@ -59,8 +60,8 @@ const ForgotPasswordPage: React.FC = () => {
                 />
                 <button type="submit">Submit</button>
             </form>
-            {message && <p>{message}</p>}
-            {error && <p>{error}</p>}
+            {message && <p className='text-red-500 mb-4'>{message}</p>}
+            {error && <p className='text-red-500 mb-4'>{error}</p>}
         </div>
     );
 };

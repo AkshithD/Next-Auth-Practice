@@ -19,12 +19,20 @@ export async function POST(req: Request) {
 
         const user = await prisma.user.findUnique({
         where: { email: email as string },
+        include: { accounts: true },
         });
     
         if (!user) {
         return NextResponse.json(
             { error: "User not found" },
             { status: 404 }
+        );
+        }
+
+        if (user.accounts.some((acc) => acc.provider !== "credentials")) { // Check if the account is created as a credentials account
+        return NextResponse.json(
+            { error: "Account is not a credentials account" },
+            { status: 400 }
         );
         }
 
