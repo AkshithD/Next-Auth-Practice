@@ -4,10 +4,10 @@ import { z } from "zod";
 
 const registerSchema = z.object({
     email: z
-      .string({ required_error: "Email is required" })
-      .min(1, "Email is required")
-      .email("Invalid email"),
-    });
+        .string({ required_error: "Email is required" })
+        .min(1, "Email is required")
+        .email("Invalid email"),
+});
 
 const ForgotPasswordPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -26,7 +26,7 @@ const ForgotPasswordPage: React.FC = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ Email }),
+                body: JSON.stringify({ email: Email }),
             });
 
             const data = await response.json();
@@ -36,11 +36,11 @@ const ForgotPasswordPage: React.FC = () => {
             } else {
                 setMessage(data.error);
             }
-        } catch (e){
+        } catch (e) {
             if (e instanceof z.ZodError) {
                 setError(e.errors.map((err) => err.message).join(", "));
-            }else{
-            setMessage('An error occurred. Please try again. Error: ' + e);
+            } else {
+                setMessage('An error occurred. Please try again. Error: ' + e);
             }
         }
     };

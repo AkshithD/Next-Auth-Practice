@@ -71,7 +71,7 @@ const providers: Provider[] = [Google,
       }
       return {
         id: `${user.id}`,
-        username: `${user.name}`,
+        name: `${user.name}`,
         email: `${user.email}`,
       };
     },
@@ -107,6 +107,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       } else {
         return true;
       }
-    }
+    },
+    jwt({ token, user }) {
+      // If it's the first time JWT callback is run, user object will be available
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+      }
+      return session;
+    },
   },
+
 });
