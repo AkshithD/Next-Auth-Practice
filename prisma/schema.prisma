@@ -1,4 +1,5 @@
 // prisma/schema.prisma
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -6,6 +7,11 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+}
+
+enum TokenType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
 }
 
 model User {
@@ -16,6 +22,8 @@ model User {
   emailVerified  DateTime?
   image          String?
   accounts       Account[]
+
+  tokens VerificationToken[] // Relation to VerificationToken
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -43,9 +51,14 @@ model Account {
 }
 
 model VerificationToken {
-  identifier String
-  token      String
+  id         String    @id @default(cuid())
+  identifier String // Typically the user's email
+  token      String    @unique
+  type       TokenType
   expires    DateTime
+  createdAt  DateTime  @default(now())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
 
-  @@id([identifier, token])
+  @@unique([identifier, type])
 }
