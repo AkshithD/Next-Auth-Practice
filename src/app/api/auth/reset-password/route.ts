@@ -56,15 +56,17 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        hashedPassword,
-      },
-    });
-    // Delete the verification token
-    await prisma.verificationToken.delete({
-      where: { id: verificationEntry.id },
+    await prisma.$transaction(async (prisma) => {
+      prisma.user.update({
+        where: { id: user.id },
+        data: {
+          hashedPassword,
+        },
+      });
+      // Delete the verification token
+      prisma.verificationToken.delete({
+        where: { id: verificationEntry.id },
+      });
     });
     return NextResponse.json({ message: 'Password reset successfully' }, { status: 200 });
 

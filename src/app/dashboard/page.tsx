@@ -40,7 +40,9 @@ export default async function DashboardPage() {
         <p>
           <strong>Email Verified:</strong>{" "}
           {user.emailVerified ? (
-            <span className="text-green-500">Yes</span>
+            <span className="text-green-500">
+              Yes, last verified on {new Date(user.emailVerified).toLocaleString()}
+            </span>
           ) : (
             <span className="text-red-500">No</span>
           )}

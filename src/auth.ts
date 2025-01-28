@@ -60,7 +60,9 @@ const providers: Provider[] = [Google,
       if (!user) {
         throw new UserNotFoundError();
       }
-
+      if (!user.hashedPassword) {
+        throw new OauthError();
+      }
       const isValidPassword = await bcrypt.compare(
         credentials.password as string,
         user.hashedPassword as string

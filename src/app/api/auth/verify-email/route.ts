@@ -44,19 +44,17 @@ export async function GET(req: Request) {
                 { status: 400 }
             );
         }
-
-        await prisma.user.update({
-            where: { id: user.id },
-            data: {
-                emailVerified: new Date(),
-            },
-        });
-
-        // Delete the used VerificationToken
-        await prisma.verificationToken.delete({
-            where: { id: verificationEntry.id },
-        });
-
+        await prisma.$transaction([
+            prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    emailVerified: new Date(),
+                },
+            }),
+            prisma.verificationToken.delete({
+                where: { id: verificationEntry.id },
+            }),
+        ]);
         return NextResponse.json(
             { message: "Email verified successfully." },
             { status: 200 }
